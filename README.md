@@ -42,7 +42,7 @@ Visit API docs UI: **[localhost:5000](http://localhost:5000)**
 ![App Screenshot](screenshot.png)
 Original buggy obj vertices before transformation
 
-```json
+```bash
   # vertices
   v 329.088287 23.088200 739.943176
   v 332.551910 23.978901 738.547974
@@ -60,7 +60,7 @@ Transformed buggy obj vertices after scale and translate vector transformation
   }
 ```
 
-```json
+```bash
   # transformed vertices
   v 668.176574 46.1764 1479.886352
   v 675.10382 47.957802 1477.095948

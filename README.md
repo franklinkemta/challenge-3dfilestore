@@ -22,13 +22,13 @@ To get started with the 3D Filestore API follow these steps:
 1. Clone the project repository:
 
 ```bash
-  git clone https://github.com/franklinkemta/challenge-3dfilestore-api.git
+  git clone https://github.com/franklinkemta/challenge-3dfilestore.git
 ```
 
 2. Navigate, Install and Serve
 
 ```bash
-  cd challenge-3dfilestore-api && npm install
+  cd challenge-3dfilestore && npm install
 ```
 
 3. Start the server

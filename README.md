@@ -40,6 +40,35 @@ To get started with the 3D Filestore API follow these steps:
 Visit API docs UI: **[localhost:5000](http://localhost:5000)**
 
 ![App Screenshot](screenshot.png)
+Original buggy obj vertices before transformation
+
+```json
+  # vertices
+  v 329.088287 23.088200 739.943176
+  v 332.551910 23.978901 738.547974
+  v 332.605499 22.584801 738.398682
+  # ...
+```
+
+![App Screenshot](sc-buggy.jpg)
+
+Transformed buggy obj vertices after scale and translate vector transformation
+```json
+  { 
+    "scale": [2,2,2], 
+    "translation": [10,0,0] 
+  }
+```
+
+```json
+  # transformed vertices
+  v 668.176574 46.1764 1479.886352
+  v 675.10382 47.957802 1477.095948
+  v 675.210998 45.169602 1476.797364
+  # ...
+```
+
+![App Screenshot](sc-buggy-transformed.jpg)
 
 ## API Reference
 
@@ -57,7 +86,7 @@ The API provides the following endpoints in openapi V3 specification:
 GET http://localhost:5000/api/files/buggy/download-transformed?scale=[2,2,2]&translation=[10,0,0]
 ```
 
-This will download the source file using buggy as placeholder if it does not exists and progressively stream the transformed object as the response
+This call will stream the transformed 3D object progressively as a download response applying the given transformation e.g { scale: [2,2,2], translate: [10,0,0] } on the original source file vertices and **will not alter the file ⚠️**
 
 ## Constraints
 

@@ -1,0 +1,151 @@
+openapi: 3.0.3
+info:
+  title: 3D File Repository API
+  description: REST API for managing 3D files
+  version: 1.0.0
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: http://localhost:5000/api
+paths:
+  /files:
+    get:
+      summary: List all 3D files
+      responses:
+        "200":
+          description: List of 3D files
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/3DObject"
+    post:
+      summary: Upload a 3D file
+      responses:
+        "200":
+          description: File uploaded successfully
+
+  /files/{fileId}:
+    put:
+      summary: Rename file
+      parameters:
+        - in: path
+          name: fileId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RenameRequest"
+      responses:
+        "200":
+          description: File renamed successfully
+    delete:
+      summary: Delete file
+      parameters:
+        - in: path
+          name: fileId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: File deleted successfully
+
+  /files/{fileId}/download:
+    get:
+      summary: Download Original 3D File
+      parameters:
+        - in: path
+          name: fileId
+          required: true
+          schema:
+            type: string
+          description: The ID of the original 3D file to download.
+      responses:
+        "200":
+          description: The original 3D file has been successfully downloaded.
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+
+  /files/{fileId}/download-transformed:
+    get:
+      summary: Download Transformed File
+      parameters:
+        - in: path
+          name: fileId
+          required: true
+          schema:
+            type: string
+          description: The ID of the file to download. Please use 'buggy' as the default value.
+        - in: query
+          name: transform
+          required: true
+          schema:
+            $ref: "#/components/schemas/TransformRequest"
+      responses:
+        "200":
+          description: Transformation success
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        "500":
+          description: Internal server error
+
+components:
+  schemas:
+    TransformRequest:
+      type: object
+      properties:
+        scale:
+          type: array
+          required: true
+          items:
+            type: number
+          maxItems: 3
+          description: Scale vector for transformation.
+          example: [2, 2, 2]
+        translation:
+          type: array
+          required: true
+          items:
+            type: number
+          maxItems: 3
+          description: Translation vector for transformation.
+          example: [10, 0, 0]
+
+    RenameRequest:
+      type: object
+      properties:
+        newName:
+          type: string
+      required:
+        - newName
+
+    3DObject:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the 3D object.
+        name:
+          type: string
+          description: Name of the 3D object.
+        format:
+          type: string
+          description: File format of the 3D object (e.g., OBJ, STL). only OBJ supported now
+      required:
+        - id
+        - name
+        - format

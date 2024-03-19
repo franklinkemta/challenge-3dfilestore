@@ -7,6 +7,9 @@ This is an implementation of a REST API of a 3D file repository application
 
 The API provides endpoints to manage and transform 3D object files
 
+## Update ⚠️
+Check the branch 'fixtutes' for updated optimizations
+
 ## Features for 3D Objects CRUD and Transformation Operations
 
 - Upload 3D files

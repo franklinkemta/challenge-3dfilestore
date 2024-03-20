@@ -7,9 +7,6 @@ This is an implementation of a REST API of a 3D file repository application
 
 The API provides endpoints to manage and transform 3D object files
 
-## Update ⚠️
-Check the branch 'fixtutes' for updated optimizations
-
 ## Features for 3D Objects CRUD and Transformation Operations
 
 - Upload 3D files
@@ -80,13 +77,12 @@ The API provides the following endpoints in openapi V3 specification:
 - `GET /api/files`: List all 3D files
 - `PUT /api/files/:fileId`: Rename a 3D file
 - `DELETE /api/files/:fileId`: Delete a 3D file
-- `GET /api/files/:fileId/download`: Download the original 3D file
-- `GET /api/files/:fileId/download-transformed`: Download the transformed 3D file with dynamic scaling and translation
+- `GET /api/files/:fileId`: Download the original 3D file or transformed(scaling and translation)
 
 ## Usage Examples
 
 ```bash
-GET http://localhost:5000/api/files/buggy/download-transformed?scale=[2,2,2]&translation=[10,0,0]
+GET http://localhost:5000/api/files/buggy?scale=[2,2,2]&translation=[10,0,0]
 ```
 
 This call will stream the transformed 3D object progressively as a download response applying the given transformation e.g { scale: [2,2,2], translate: [10,0,0] } on the original source file vertices and **will not alter the file ⚠️**

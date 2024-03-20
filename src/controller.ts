@@ -13,7 +13,7 @@ import { getObjFile, transformObjFile } from './utils';
  * @param translation The translation vector for transformation.
  * @param res The response object to stream the transformed file.
  */
-export const loadAndTransformFile = async (fileId: string, scale: number[], translation: number[], res: Response) => {
+const loadAndTransformFile = async (fileId: string, scale: number[], translation: number[], res: Response) => {
     try {
         const [filePath, fileFormat] = await getObjFile(fileId);
 
@@ -33,6 +33,21 @@ export const loadAndTransformFile = async (fileId: string, scale: number[], tran
         res.status(500).send('Failed to transform file');
     }
 }
+
+
+/**
+ * Endpoint to download an original 3D file.
+ * @param req The request object containing the file ID.
+ * @param res The response object for streaming the file.
+ */
+export const downloadFile = async (req: Request, res: Response) => {
+    // Logic to download an original 3D file
+    const fileId = req.params.fileId;
+    const format = 'obj';
+    res.setHeader('Content-Type', 'application/octet-stream');
+    res.setHeader('Content-Disposition', `attachment; filename="${fileId}.${format}"`);
+    res.sendStatus(200);
+};
 
 /**
  * Endpoint for downloading a transformed file.
@@ -96,16 +111,3 @@ export const deleteFile = (req: Request, res: Response) => {
     res.sendStatus(200);
 };
 
-/**
- * Endpoint to download an original 3D file.
- * @param req The request object containing the file ID.
- * @param res The response object for streaming the file.
- */
-export const downloadFile = (req: Request, res: Response) => {
-    // Logic to download an original 3D file
-    const fileId = req.params.fileId;
-    const format = 'obj';
-    res.setHeader('Content-Type', 'application/octet-stream');
-    res.setHeader('Content-Disposition', `attachment; filename="${fileId}.${format}"`);
-    res.sendStatus(200);
-};

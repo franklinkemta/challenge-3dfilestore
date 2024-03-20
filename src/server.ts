@@ -4,7 +4,7 @@ import fs from "fs";
 import YAML from 'yaml';
 
 import { FILES_STORE_PATH } from './constants';
-import { ensureFolderExistsSync } from "./utils";
+import { ensureFolderExists } from "./utils";
 import fileRoutes from './routes';
 
 // Read the OpenAPI specification from YAML file
@@ -42,12 +42,12 @@ function monitorMemoryUsage() {
 // Monitor memory usage periodically every 5 seconds
 setInterval(monitorMemoryUsage, 5000);
 
+// Create a folder to mimic file storage for 3D models
+ensureFolderExists(FILES_STORE_PATH);
+
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
-
-    // Create a folder to mimic file storage for 3D models
-    ensureFolderExistsSync(FILES_STORE_PATH);
 });
 
 export default app;

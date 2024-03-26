@@ -28,7 +28,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: "#/components/schemas/3DObject"
+              $ref: "#/components/schemas/Create3DObject"
 
       responses:
         "200":
@@ -117,24 +117,37 @@ components:
       required:
         - newName
 
-    3DObject:
+    3DObjectBase:
       type: object
       properties:
-        id:
-          type: string
-          format: uuid
-          description: Unique identifier for the 3D object.
         name:
           type: string
           description: Name of the 3D object.
         format:
           type: string
-          description: File format of the 3D object (e.g., OBJ, STL). only OBJ supported now
+          description: File format of the 3D object (e.g., OBJ, STL). Only OBJ supported now.
         content:
           type: string
           format: binary
           description: File binary, only required when uploading a file.
-      required:
-        - id
-        - name
-        - format
+
+    3DObject:
+      allOf:
+        - $ref: "#/components/schemas/3DObjectBase"
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              description: Unique identifier for the 3D object.
+          required:
+            - id
+
+    Create3DObject:
+      allOf:
+        - $ref: "#/components/schemas/3DObjectBase"
+        - type: object
+          # No 'id' property required for creation
+          required:
+            - name
+            - format

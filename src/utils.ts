@@ -1,4 +1,5 @@
 import fs from 'fs';
+import fsPromises from 'fs/promises';
 import axios from 'axios';
 import readline from 'readline';
 import { Response } from 'express';
@@ -29,16 +30,15 @@ export function addArrays(vertex: number[], translation: number[]): number[] {
  * Function to ensure that a folder exists synchronously
  * @param folderPath The path of the folder to ensure exists
  */
-export function ensureFolderExistsSync(folderPath: string): void {
-    try {
-        fs.mkdirSync(folderPath, { recursive: true });
+export function ensureFolderExists(folderPath: string): void {
+    fsPromises.mkdir(folderPath, { recursive: true }).then(() => {
         console.info(`Checked folder: ${folderPath}`);
-    } catch (err: any) {
+    }).catch((err: any) => {
         // Silent if the folder already exists
         if (err.code !== 'EEXIST') {
             throw err;
         }
-    }
+    })
 }
 
 /**
@@ -84,18 +84,14 @@ export async function getObjFile(fileId: string): Promise<[string, string]> {
  * @param res The Express response object to write transformed lines
  */
 export function processObjLine(line: string, scale: number[], translation: number[], res: Response): void {
-    const vertexRegex = /^v\s+([-+]?\d+\.\d+)\s+([-+]?\d+\.\d+)\s+([-+]?\d+\.\d+)/;
-    const vertexMatch = line.match(vertexRegex);
-    if (vertexMatch) {
-        const x = parseFloat(vertexMatch[1]);
-        const y = parseFloat(vertexMatch[2]);
-        const z = parseFloat(vertexMatch[3]);
-        const vertex = [x, y, z];
+    const parts = line.trim().split(/\s+/); // Split the line by whitespace
+
+    if (parts[0] === 'v' && parts.length === 4) {
+        const vertex = parts.slice(1).map(parseFloat);
         const transformedVertex = addArrays(multiplyArray(vertex, scale), translation);
         const transformedLine = `v ${transformedVertex[0]} ${transformedVertex[1]} ${transformedVertex[2]}`;
-        res.write(transformedLine + '\n'); // Write the transformed line to the response
+        res.write(transformedLine + '\n');
     } else {
-        // If the line doesn't match the vertex format, write it unchanged
         res.write(line + '\n');
     }
 }

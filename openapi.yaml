@@ -23,6 +23,13 @@ paths:
                   $ref: "#/components/schemas/3DObject"
     post:
       summary: Upload a 3D file
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/Create3DObject"
+
       responses:
         "200":
           description: File uploaded successfully
@@ -57,16 +64,20 @@ paths:
         "200":
           description: File deleted successfully
 
-  /files/{fileId}/download:
     get:
-      summary: Download Original 3D File
+      summary: Download Original 3D File (Original or Transformed)
       parameters:
         - in: path
           name: fileId
           required: true
           schema:
             type: string
-          description: The ID of the original 3D file to download.
+          description: The ID of the 3D file to download. Please use 'buggy' as the default value.
+        - in: query
+          name: transform
+          required: false
+          schema:
+            $ref: "#/components/schemas/TransformRequest"
       responses:
         "200":
           description: The original 3D file has been successfully downloaded.
@@ -75,32 +86,6 @@ paths:
               schema:
                 type: string
                 format: binary
-
-  /files/{fileId}/download-transformed:
-    get:
-      summary: Download Transformed File
-      parameters:
-        - in: path
-          name: fileId
-          required: true
-          schema:
-            type: string
-          description: The ID of the file to download. Please use 'buggy' as the default value.
-        - in: query
-          name: transform
-          required: true
-          schema:
-            $ref: "#/components/schemas/TransformRequest"
-      responses:
-        "200":
-          description: Transformation success
-          content:
-            application/octet-stream:
-              schema:
-                type: string
-                format: binary
-        "500":
-          description: Internal server error
 
 components:
   schemas:
@@ -132,20 +117,37 @@ components:
       required:
         - newName
 
-    3DObject:
+    3DObjectBase:
       type: object
       properties:
-        id:
-          type: string
-          format: uuid
-          description: Unique identifier for the 3D object.
         name:
           type: string
           description: Name of the 3D object.
         format:
           type: string
-          description: File format of the 3D object (e.g., OBJ, STL). only OBJ supported now
-      required:
-        - id
-        - name
-        - format
+          description: File format of the 3D object (e.g., OBJ, STL). Only OBJ supported now.
+        content:
+          type: string
+          format: binary
+          description: File binary, only required when uploading a file.
+
+    3DObject:
+      allOf:
+        - $ref: "#/components/schemas/3DObjectBase"
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              description: Unique identifier for the 3D object.
+          required:
+            - id
+
+    Create3DObject:
+      allOf:
+        - $ref: "#/components/schemas/3DObjectBase"
+        - type: object
+          # No 'id' property required for creation
+          required:
+            - name
+            - format
